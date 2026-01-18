@@ -95,83 +95,165 @@ The pipeline works with any image collection - just point it to your image direc
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## 🚀 Quick Start
+---
 
-### Prerequisites
+## 🚀 Deployment Options
+
+### Option A: Local Development (Recommended for Processing)
+
+Best for: Running the GPU processing pipeline, development, debugging.
+
+#### Prerequisites
 
 - Python 3.11+
-- Docker & Docker Compose
-- NVIDIA GPU (for processing; serving is CPU-only)
+- Docker & Docker Compose (for Postgres/Qdrant)
+- NVIDIA GPU with CUDA (for processing)
 
-### 1. Clone and Setup
+#### Steps
 
 ```bash
+# 1. Clone and setup
 git clone https://github.com/dspinozz/Computer-Vision-Pipeline.git
 cd Computer-Vision-Pipeline
 
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-```
 
-### 2. Download Data
-
-```bash
-# Download Places365 validation set (~1GB)
-python scripts/download_places365.py --output-dir data/places365
-```
-
-### 3. Start Infrastructure
-
-```bash
+# 2. Start infrastructure (Postgres + Qdrant)
 docker compose up -d postgres qdrant
-```
 
-### 4. Process Images
+# 3. Download sample data
+python scripts/download_places365.py --output-dir data/places365
 
-```bash
-# Run full pipeline (requires GPU)
+# 4. Process images (requires GPU)
 python scripts/pipeline.py process --input-dir data/places365/val_256
 
-# Import to vector database
+# 5. Import to databases
 python scripts/import_qdrant.py
-
-# Migrate to PostgreSQL
 python scripts/migrate_to_postgres.py
-```
 
-### 5. Start API
-
-```bash
+# 6. Start API locally
 uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
 
-### 6. Search
+---
+
+### Option B: Full Docker Deployment (Recommended for Serving)
+
+Best for: Production deployment, serving pre-processed data.
+
+#### Prerequisites
+
+- Docker & Docker Compose
+- Pre-processed outputs (metadata JSON files + embeddings)
+
+#### Steps
 
 ```bash
-curl "http://localhost:8000/v1/images/search?q=mountain+landscape"
+# 1. Clone repository
+git clone https://github.com/dspinozz/Computer-Vision-Pipeline.git
+cd Computer-Vision-Pipeline
+
+# 2. Configure environment (optional, uses defaults otherwise)
+cp .env.example .env
+# Edit .env to set POSTGRES_PASSWORD, etc.
+
+# 3. Start all services
+docker compose up -d postgres qdrant api
+
+# 4. Verify services are running
+docker compose ps
+
+# 5. Check API health
+curl http://localhost:8000/health
 ```
+
+#### With GPU (for on-demand processing)
+
+```bash
+# Start with GPU-enabled API
+docker compose --profile gpu up -d postgres qdrant api-gpu
+```
+
+---
+
+## 🧪 Testing the Deployment
+
+### 1. Check Service Health
+
+```bash
+# API health
+curl http://localhost:8000/health
+
+# Qdrant health
+curl http://localhost:6333/health
+
+# Postgres connection (from container)
+docker exec cvpipeline-postgres pg_isready -U cvpipeline
+```
+
+### 2. Test Semantic Search
+
+```bash
+# Search for images
+curl "http://localhost:8000/v1/images/search?q=mountain+landscape&limit=3"
+
+# Expected: JSON with matching images, scores, captions
+```
+
+### 3. Test Stats Endpoint
+
+```bash
+curl http://localhost:8000/v1/stats
+
+# Expected: {"metadata_files": 36497, "embedding_files": 36497, ...}
+```
+
+### 4. Run Demo Script
+
+```bash
+python notebooks/demo.py
+```
+
+### 5. Interactive Testing (Optional)
+
+```bash
+# Start pgAdmin for database inspection
+docker compose --profile admin up -d pgadmin
+
+# Access at http://localhost:5050
+# Login: admin@localhost / admin (change in production)
+```
+
+---
 
 ## 📁 Project Structure
 
 ```
 Computer-Vision-Pipeline/
 ├── api/
+│   ├── __init__.py
 │   └── main.py              # FastAPI application
 ├── configs/
 │   ├── schema.sql           # PostgreSQL schema
-│   └── taxonomy.json        # Tag taxonomy (155 tags)
+│   ├── taxonomy.json        # Tag taxonomy (155 tags)
+│   └── image_spec.json      # Processing configuration
 ├── scripts/
 │   ├── pipeline.py          # Main processing pipeline
 │   ├── download_places365.py # Data download script
-│   ├── import_qdrant.py     # Vector import
-│   └── migrate_to_postgres.py
+│   ├── download_models.py   # Model download script
+│   ├── import_qdrant.py     # Vector database import
+│   ├── migrate_to_postgres.py # Metadata migration
+│   └── test_models.py       # Model testing
 ├── notebooks/
 │   └── demo.py              # Demo script
-├── docker-compose.yml
-├── Dockerfile.api
+├── docker-compose.yml       # Multi-service orchestration
+├── Dockerfile.api           # API container
 ├── .env.example             # Environment template
-└── requirements.txt
+├── requirements.txt         # Full dependencies
+├── requirements-minimal.txt # Serving-only dependencies
+└── requirements-api.txt     # API dependencies
 ```
 
 ## 🔧 Models Used
@@ -234,7 +316,7 @@ Each image produces structured metadata:
 Default passwords in `docker-compose.yml` are for **development only**. 
 For production:
 1. Copy `.env.example` to `.env`
-2. Set secure passwords
+2. Set secure passwords for `POSTGRES_PASSWORD`, `PGADMIN_PASSWORD`
 3. Use `docker compose --env-file .env up`
 
 ## License
