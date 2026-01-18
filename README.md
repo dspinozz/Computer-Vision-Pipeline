@@ -38,7 +38,7 @@ To recreate:
 
 ```bash
 # Download Places365 validation set
-python scripts/download_places365.py --output-dir data/places365
+python scripts/download_places365.py --output-dir data/places365 --use-validation
 
 # Or manually download from:
 # http://data.csail.mit.edu/places/places365/val_256.tar
@@ -131,7 +131,7 @@ python scripts/download_models.py
 docker compose up -d postgres qdrant
 
 # 4. Download sample data
-python scripts/download_places365.py --output-dir data/places365
+python scripts/download_places365.py --output-dir data/places365 --use-validation
 
 # 5. Create manifest (catalog images)
 python scripts/pipeline.py ingest --input-dir data/places365/val_256
