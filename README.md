@@ -107,7 +107,10 @@ Best for: Running the GPU processing pipeline, development, debugging.
 
 - Python 3.11+
 - Docker & Docker Compose (for Postgres/Qdrant)
-- NVIDIA GPU with CUDA (for processing)
+- NVIDIA GPU with CUDA (16GB+ VRAM recommended for full pipeline)
+- ~20GB disk space for models
+
+> **GPU Memory Note**: Running `--lane all` requires ~16GB VRAM. For 12GB GPUs, run lanes separately (Lane A, then Lane B). For 8GB GPUs, consider CPU-only mode or cloud GPU.
 
 #### Steps
 
@@ -119,21 +122,33 @@ cd Computer-Vision-Pipeline
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+pip install sentencepiece  # Required for SigLIP tokenizer
 
-# 2. Start infrastructure (Postgres + Qdrant)
+# 2. Download models (~16GB)
+python scripts/download_models.py
+
+# 3. Start infrastructure (Postgres + Qdrant)
 docker compose up -d postgres qdrant
 
-# 3. Download sample data
+# 4. Download sample data
 python scripts/download_places365.py --output-dir data/places365
 
-# 4. Process images (requires GPU)
-python scripts/pipeline.py process --input-dir data/places365/val_256
+# 5. Create manifest (catalog images)
+python scripts/pipeline.py ingest --input-dir data/places365/val_256
 
-# 5. Import to databases
+# 6. Process images (requires GPU)
+# Option A: Full pipeline (16GB+ VRAM)
+python scripts/pipeline.py process --lane all
+
+# Option B: Separate lanes (12GB VRAM)
+python scripts/pipeline.py process --lane A  # Embeddings, captions, tags
+python scripts/pipeline.py process --lane B  # Object detection, masks
+
+# 7. Import to databases
 python scripts/import_qdrant.py
 python scripts/migrate_to_postgres.py
 
-# 6. Start API locally
+# 8. Start API locally
 uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
 
