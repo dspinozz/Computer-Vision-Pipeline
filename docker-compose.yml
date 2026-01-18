@@ -1,0 +1,162 @@
+# Computer Vision Pipeline - Docker Compose
+#
+# NOTE: Default passwords are for development only.
+# Change POSTGRES_PASSWORD and other credentials for production use.
+# See .env.example for environment variable reference.
+#
+# Services:
+#   - postgres: Metadata database
+#   - qdrant: Vector search engine
+#   - api: FastAPI application
+#
+# Usage:
+#   docker compose up -d postgres qdrant   # Start infrastructure
+#   docker compose up api                   # Start API (or run locally for dev)
+#
+# For GPU support (API with model inference):
+#   docker compose --profile gpu up api-gpu
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # PostgreSQL - Structured metadata storage
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: cvpipeline-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cvpipeline}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cvpipeline_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-cvpipeline_images}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./configs/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cvpipeline} -d ${POSTGRES_DB:-cvpipeline_images}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # Qdrant - Vector search engine
+  # ============================================================================
+  qdrant:
+    image: qdrant/qdrant:v1.12.1
+    container_name: cvpipeline-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"  # REST API
+      - "6334:6334"  # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+      QDRANT__LOG_LEVEL: INFO
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # API - FastAPI application (CPU-only, for serving)
+  # ============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: cvpipeline-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_COLLECTION: image_embeddings
+      DATABASE_URL: postgresql://${POSTGRES_USER:-cvpipeline}:${POSTGRES_PASSWORD:-cvpipeline_dev_password}@postgres:5432/${POSTGRES_DB:-cvpipeline_images}
+      MODELS_DIR: /data/models
+      OUTPUT_DIR: /data/outputs
+      TAXONOMY_PATH: /app/configs/taxonomy.json
+    volumes:
+      - ./outputs:/data/outputs:ro
+      - ./models:/data/models:ro
+      - ./configs:/app/configs:ro
+      - ./uploads:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================================================
+  # API with GPU (for on-demand processing)
+  # ============================================================================
+  api-gpu:
+    profiles: ["gpu"]
+    build:
+      context: .
+      dockerfile: Dockerfile.api-gpu
+    container_name: cvpipeline-api-gpu
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_COLLECTION: image_embeddings
+      DATABASE_URL: postgresql://${POSTGRES_USER:-cvpipeline}:${POSTGRES_PASSWORD:-cvpipeline_dev_password}@postgres:5432/${POSTGRES_DB:-cvpipeline_images}
+      MODELS_DIR: /data/models
+      OUTPUT_DIR: /data/outputs
+      TAXONOMY_PATH: /app/configs/taxonomy.json
+    volumes:
+      - ./outputs:/data/outputs
+      - ./models:/data/models:ro
+      - ./configs:/app/configs:ro
+      - ./uploads:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # ============================================================================
+  # pgAdmin (optional, for database management)
+  # ============================================================================
+  pgadmin:
+    profiles: ["admin"]
+    image: dpage/pgadmin4:latest
+    container_name: cvpipeline-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@localhost}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  qdrant_data:
+  pgadmin_data:
+
+networks:
+  default:
+    name: cvpipeline-network

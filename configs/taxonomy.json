@@ -1,0 +1,451 @@
+{
+  "version": "2.0.0",
+  "description": "Taxonomy for computer vision scene understanding - expanded for Places365",
+  
+  "scene": {
+    "description": "Scene/setting categories",
+    "tags": {
+      "restaurant": {
+        "display": "Restaurant",
+        "prompts": ["a restaurant interior", "inside a restaurant", "restaurant dining area"],
+        "children": {
+          "ramen_shop": {
+            "display": "Ramen Shop",
+            "prompts": ["a ramen shop", "Japanese noodle restaurant", "ramen restaurant interior"]
+          },
+          "cafe": {
+            "display": "Café",
+            "prompts": ["a cafe interior", "coffee shop", "cozy cafe"]
+          },
+          "bar": {
+            "display": "Bar",
+            "prompts": ["a bar interior", "pub", "drinking establishment"]
+          },
+          "fast_food": {
+            "display": "Fast Food",
+            "prompts": ["fast food restaurant", "burger joint", "quick service restaurant"]
+          },
+          "bakery": {
+            "display": "Bakery",
+            "prompts": ["bakery interior", "bread shop", "pastry shop"]
+          }
+        }
+      },
+      "retail": {
+        "display": "Retail/Shop",
+        "prompts": ["a shop interior", "retail store", "store"],
+        "children": {
+          "bookstore": {
+            "display": "Bookstore",
+            "prompts": ["a bookstore", "book shop interior", "library bookshop"]
+          },
+          "convenience_store": {
+            "display": "Convenience Store",
+            "prompts": ["convenience store", "corner store", "small market"]
+          },
+          "market": {
+            "display": "Market",
+            "prompts": ["market stall", "food market", "indoor market"]
+          },
+          "supermarket": {
+            "display": "Supermarket",
+            "prompts": ["supermarket aisle", "grocery store", "supermarket interior"]
+          },
+          "mall": {
+            "display": "Shopping Mall",
+            "prompts": ["shopping mall interior", "mall corridor", "shopping center"]
+          }
+        }
+      },
+      "transportation": {
+        "display": "Transportation",
+        "prompts": ["transportation hub", "transit station"],
+        "children": {
+          "train_station": {
+            "display": "Train Station",
+            "prompts": ["train station platform", "railway station", "subway station"]
+          },
+          "airport": {
+            "display": "Airport",
+            "prompts": ["airport terminal", "airport interior", "departure gate"]
+          },
+          "bus_station": {
+            "display": "Bus Station",
+            "prompts": ["bus station", "bus terminal", "bus stop"]
+          },
+          "vehicle_interior": {
+            "display": "Vehicle Interior",
+            "prompts": ["inside a car", "bus interior", "train interior", "subway car"]
+          }
+        }
+      },
+      "workplace": {
+        "display": "Workplace",
+        "prompts": ["office space", "workplace interior"],
+        "children": {
+          "office": {
+            "display": "Office",
+            "prompts": ["office interior", "corporate office", "business office"]
+          },
+          "classroom": {
+            "display": "Classroom",
+            "prompts": ["classroom interior", "school classroom", "lecture room"]
+          },
+          "library": {
+            "display": "Library",
+            "prompts": ["library interior", "public library", "reading room"]
+          },
+          "conference": {
+            "display": "Conference Room",
+            "prompts": ["conference room", "meeting room", "boardroom"]
+          },
+          "hospital": {
+            "display": "Hospital",
+            "prompts": ["hospital corridor", "medical facility", "clinic interior"]
+          }
+        }
+      },
+      "outdoor": {
+        "display": "Outdoor",
+        "prompts": ["outdoor scene", "outside", "exterior view"],
+        "children": {
+          "street": {
+            "display": "Street",
+            "prompts": ["city street", "urban street", "sidewalk", "alley"]
+          },
+          "park": {
+            "display": "Park",
+            "prompts": ["public park", "city park", "garden park"]
+          },
+          "plaza": {
+            "display": "Plaza",
+            "prompts": ["town square", "plaza", "public square"]
+          },
+          "beach": {
+            "display": "Beach",
+            "prompts": ["beach scene", "sandy beach", "ocean shore", "seaside"]
+          },
+          "forest": {
+            "display": "Forest",
+            "prompts": ["forest scene", "woods", "trees in forest", "woodland"]
+          },
+          "mountain": {
+            "display": "Mountain",
+            "prompts": ["mountain view", "mountain landscape", "hillside"]
+          },
+          "garden": {
+            "display": "Garden",
+            "prompts": ["garden scene", "backyard garden", "flower garden"]
+          },
+          "deck_patio": {
+            "display": "Deck/Patio",
+            "prompts": ["wooden deck", "patio", "outdoor terrace", "balcony"]
+          },
+          "parking": {
+            "display": "Parking",
+            "prompts": ["parking lot", "parking garage", "car park"]
+          }
+        }
+      },
+      "home": {
+        "display": "Home",
+        "prompts": ["home interior", "residential space", "house interior"],
+        "children": {
+          "living_room": {
+            "display": "Living Room",
+            "prompts": ["living room", "lounge", "sitting room"]
+          },
+          "kitchen": {
+            "display": "Kitchen",
+            "prompts": ["kitchen interior", "home kitchen", "cooking area"]
+          },
+          "bedroom": {
+            "display": "Bedroom",
+            "prompts": ["bedroom interior", "sleeping room", "private room"]
+          },
+          "bathroom": {
+            "display": "Bathroom",
+            "prompts": ["bathroom interior", "restroom", "washroom"]
+          },
+          "dining_room": {
+            "display": "Dining Room",
+            "prompts": ["dining room", "dinner table", "eating area"]
+          }
+        }
+      },
+      "cultural": {
+        "display": "Cultural/Historic",
+        "prompts": ["cultural site", "historic building", "monument"],
+        "children": {
+          "temple": {
+            "display": "Temple",
+            "prompts": ["temple interior", "shrine", "religious building", "church interior"]
+          },
+          "museum": {
+            "display": "Museum",
+            "prompts": ["museum interior", "art gallery", "exhibition hall"]
+          },
+          "historic": {
+            "display": "Historic Building",
+            "prompts": ["historic building", "old architecture", "heritage site", "clock tower"]
+          },
+          "theater": {
+            "display": "Theater",
+            "prompts": ["theater interior", "cinema", "auditorium", "stage"]
+          }
+        }
+      },
+      "leisure": {
+        "display": "Leisure",
+        "prompts": ["leisure venue", "entertainment place"],
+        "children": {
+          "gym": {
+            "display": "Gym",
+            "prompts": ["gym interior", "fitness center", "exercise room"]
+          },
+          "pool": {
+            "display": "Pool",
+            "prompts": ["swimming pool", "pool area", "indoor pool"]
+          },
+          "spa": {
+            "display": "Spa",
+            "prompts": ["spa interior", "wellness center", "massage room"]
+          },
+          "hotel": {
+            "display": "Hotel",
+            "prompts": ["hotel lobby", "hotel room", "hotel interior"]
+          }
+        }
+      }
+    }
+  },
+
+  "mood": {
+    "description": "Mood/vibe/atmosphere",
+    "tags": {
+      "cozy": {
+        "display": "Cozy",
+        "prompts": ["cozy atmosphere", "warm and inviting", "comfortable space"]
+      },
+      "busy": {
+        "display": "Busy",
+        "prompts": ["busy crowded place", "bustling atmosphere", "active environment"]
+      },
+      "quiet": {
+        "display": "Quiet",
+        "prompts": ["quiet peaceful place", "calm atmosphere", "serene environment"]
+      },
+      "tense": {
+        "display": "Tense",
+        "prompts": ["tense atmosphere", "serious mood", "intense environment"]
+      },
+      "romantic": {
+        "display": "Romantic",
+        "prompts": ["romantic atmosphere", "intimate setting", "date night ambiance"]
+      },
+      "professional": {
+        "display": "Professional",
+        "prompts": ["professional environment", "formal setting", "business atmosphere"]
+      },
+      "playful": {
+        "display": "Playful",
+        "prompts": ["playful atmosphere", "fun environment", "cheerful mood"]
+      },
+      "mysterious": {
+        "display": "Mysterious",
+        "prompts": ["mysterious atmosphere", "eerie mood", "dark and mysterious"]
+      },
+      "natural": {
+        "display": "Natural",
+        "prompts": ["natural setting", "nature environment", "organic atmosphere"]
+      }
+    }
+  },
+
+  "lighting": {
+    "description": "Lighting conditions",
+    "tags": {
+      "daylight": {
+        "display": "Daylight",
+        "prompts": ["natural daylight", "daytime lighting", "bright day", "morning light"]
+      },
+      "night": {
+        "display": "Night",
+        "prompts": ["nighttime", "after dark", "evening scene", "night scene"]
+      },
+      "neon": {
+        "display": "Neon",
+        "prompts": ["neon lighting", "neon signs", "colorful neon lights"]
+      },
+      "warm": {
+        "display": "Warm Lighting",
+        "prompts": ["warm indoor lighting", "soft warm light", "amber lighting"]
+      },
+      "dim": {
+        "display": "Dim",
+        "prompts": ["dim lighting", "low light", "dark atmosphere"]
+      },
+      "sunset": {
+        "display": "Sunset",
+        "prompts": ["sunset lighting", "golden hour", "evening sun", "dusk"]
+      },
+      "sunrise": {
+        "display": "Sunrise",
+        "prompts": ["sunrise light", "dawn", "early morning light"]
+      },
+      "fluorescent": {
+        "display": "Fluorescent",
+        "prompts": ["fluorescent lighting", "office lighting", "harsh overhead light"]
+      }
+    }
+  },
+
+  "weather": {
+    "description": "Weather conditions (if visible)",
+    "tags": {
+      "rain": {
+        "display": "Rainy",
+        "prompts": ["rainy weather", "rain on window", "wet rainy day"]
+      },
+      "sunny": {
+        "display": "Sunny",
+        "prompts": ["sunny day", "bright sunshine", "clear sunny weather"]
+      },
+      "overcast": {
+        "display": "Overcast",
+        "prompts": ["overcast sky", "cloudy weather", "grey clouds"]
+      },
+      "snow": {
+        "display": "Snowy",
+        "prompts": ["snowy weather", "winter snow", "snow falling"]
+      },
+      "foggy": {
+        "display": "Foggy",
+        "prompts": ["foggy weather", "misty", "hazy atmosphere"]
+      }
+    }
+  },
+
+  "objects": {
+    "description": "Localizable objects (for GroundingDINO)",
+    "localizable": true,
+    "tags": {
+      "person": {"display": "Person", "prompts": ["person", "human", "people"]},
+      "child": {"display": "Child", "prompts": ["child", "kid", "baby", "toddler"]},
+      "table": {"display": "Table", "prompts": ["table", "dining table", "desk"]},
+      "chair": {"display": "Chair", "prompts": ["chair", "seat", "stool"]},
+      "sofa": {"display": "Sofa", "prompts": ["sofa", "couch", "settee"]},
+      "bed": {"display": "Bed", "prompts": ["bed", "mattress", "bedroom furniture"]},
+      "menu": {"display": "Menu", "prompts": ["menu", "menu board", "food menu"]},
+      "food": {"display": "Food", "prompts": ["food", "meal", "dish"]},
+      "bowl": {"display": "Bowl", "prompts": ["bowl", "ramen bowl", "soup bowl"]},
+      "cup": {"display": "Cup", "prompts": ["cup", "coffee cup", "mug"]},
+      "glass": {"display": "Glass", "prompts": ["glass", "drinking glass", "wine glass"]},
+      "bottle": {"display": "Bottle", "prompts": ["bottle", "drink bottle", "wine bottle"]},
+      "phone": {"display": "Phone", "prompts": ["phone", "mobile phone", "smartphone"]},
+      "laptop": {"display": "Laptop", "prompts": ["laptop", "notebook computer", "laptop computer"]},
+      "computer": {"display": "Computer", "prompts": ["computer", "desktop computer", "monitor"]},
+      "book": {"display": "Book", "prompts": ["book", "textbook", "reading book"]},
+      "bag": {"display": "Bag", "prompts": ["bag", "handbag", "backpack"]},
+      "window": {"display": "Window", "prompts": ["window", "glass window", "store window"]},
+      "door": {"display": "Door", "prompts": ["door", "entrance", "doorway"]},
+      "sign": {"display": "Sign", "prompts": ["sign", "signage", "shop sign"]},
+      "counter": {"display": "Counter", "prompts": ["counter", "bar counter", "service counter"]},
+      "plant": {"display": "Plant", "prompts": ["plant", "potted plant", "indoor plant"]},
+      "tree": {"display": "Tree", "prompts": ["tree", "trees", "tree trunk"]},
+      "flower": {"display": "Flower", "prompts": ["flower", "flowers", "floral arrangement"]},
+      "light": {"display": "Light", "prompts": ["light fixture", "lamp", "ceiling light"]},
+      "artwork": {"display": "Artwork", "prompts": ["artwork", "painting", "poster"]},
+      "clock": {"display": "Clock", "prompts": ["clock", "wall clock", "clock tower"]},
+      "vehicle": {"display": "Vehicle", "prompts": ["car", "vehicle", "automobile"]},
+      "bicycle": {"display": "Bicycle", "prompts": ["bicycle", "bike", "cycling"]},
+      "animal": {"display": "Animal", "prompts": ["animal", "dog", "cat", "pet"]}
+    }
+  },
+
+  "interaction": {
+    "description": "People interactions/activities",
+    "tags": {
+      "conversation": {
+        "display": "Conversation",
+        "prompts": ["people talking", "conversation", "two people chatting"]
+      },
+      "eating": {
+        "display": "Eating",
+        "prompts": ["person eating", "having a meal", "dining"]
+      },
+      "drinking": {
+        "display": "Drinking",
+        "prompts": ["person drinking", "having a drink", "drinking coffee"]
+      },
+      "working": {
+        "display": "Working",
+        "prompts": ["person working", "working on laptop", "studying"]
+      },
+      "reading": {
+        "display": "Reading",
+        "prompts": ["person reading", "reading a book", "looking at phone"]
+      },
+      "waiting": {
+        "display": "Waiting",
+        "prompts": ["person waiting", "standing in line", "sitting alone"]
+      },
+      "walking": {
+        "display": "Walking",
+        "prompts": ["person walking", "pedestrian", "strolling"]
+      },
+      "playing": {
+        "display": "Playing",
+        "prompts": ["children playing", "playing games", "recreational activity"]
+      },
+      "shopping": {
+        "display": "Shopping",
+        "prompts": ["person shopping", "browsing products", "customer"]
+      },
+      "cooking": {
+        "display": "Cooking",
+        "prompts": ["person cooking", "chef preparing food", "in the kitchen"]
+      }
+    }
+  },
+
+  "people_count": {
+    "description": "Number of people visible",
+    "tags": {
+      "zero": {"display": "No People", "prompts": ["empty space", "no people", "unoccupied"]},
+      "one": {"display": "One Person", "prompts": ["one person", "single person", "alone"]},
+      "two": {"display": "Two People", "prompts": ["two people", "couple", "pair of people"]},
+      "group": {"display": "Group", "prompts": ["group of people", "many people", "crowd"]}
+    }
+  },
+
+  "style": {
+    "description": "Visual style/aesthetic",
+    "tags": {
+      "modern": {
+        "display": "Modern",
+        "prompts": ["modern design", "contemporary style", "sleek modern"]
+      },
+      "traditional": {
+        "display": "Traditional",
+        "prompts": ["traditional style", "classic design", "vintage aesthetic"]
+      },
+      "minimalist": {
+        "display": "Minimalist",
+        "prompts": ["minimalist design", "simple clean style", "sparse interior"]
+      },
+      "rustic": {
+        "display": "Rustic",
+        "prompts": ["rustic style", "country aesthetic", "wooden rustic"]
+      },
+      "industrial": {
+        "display": "Industrial",
+        "prompts": ["industrial style", "exposed brick", "warehouse aesthetic"]
+      },
+      "luxury": {
+        "display": "Luxury",
+        "prompts": ["luxury interior", "upscale design", "elegant expensive"]
+      }
+    }
+  }
+}

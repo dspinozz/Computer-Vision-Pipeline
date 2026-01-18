@@ -1,0 +1,22 @@
+# API dependencies (CPU-only, for serving)
+# For GPU processing, use requirements.txt from the main pipeline
+
+# Web framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+
+# Database clients
+qdrant-client>=1.7.0
+psycopg2-binary>=2.9.9
+sqlalchemy>=2.0.0
+
+# Data handling
+pydantic>=2.5.0
+numpy>=1.24.0
+
+# Image handling (CPU-only)
+Pillow>=10.0.0
+
+# Utilities
+python-dotenv>=1.0.0
