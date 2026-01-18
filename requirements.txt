@@ -29,7 +29,7 @@ open-clip-torch>=2.24.0
 groundingdino-py>=0.4.0
 
 # SAM2
-segment-anything-2>=1.0
+# segment-anything-2 - install via: pip install git+https://github.com/facebookresearch/sam2.git
 
 # Hugging Face model downloads
 huggingface-hub>=0.20.0
@@ -53,3 +53,6 @@ aiohttp>=3.9.0
 # Utilities
 rich>=13.0.0  # Pretty console output
 typer>=0.9.0  # CLI interface
+requests>=2.31.0
+rich>=13.0.0
+tqdm>=4.66.0
