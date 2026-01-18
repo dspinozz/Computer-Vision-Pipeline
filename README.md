@@ -322,3 +322,26 @@ For production:
 ## License
 
 MIT
+
+---
+
+## ⚠️ Model Setup (Required Before Processing)
+
+The pipeline requires pre-downloaded models. Run this **before** processing:
+
+```bash
+# Download models (~10GB total, one-time setup)
+python scripts/download_models.py
+
+# Or download from HuggingFace manually:
+# - google/siglip-so400m-patch14-384 → models/siglip-so400m
+# - Qwen/Qwen2.5-VL-3B-Instruct → models/qwen2.5-vl-3b
+# - IDEA-Research/grounding-dino-base → models/grounding-dino-base
+# - facebook/sam2-hiera-tiny → models/sam2-tiny
+```
+
+### Alternative: Copy models from another machine
+
+```bash
+scp -r source-machine:/data/image_pipeline/models/* /data/image_pipeline/models/
+```
